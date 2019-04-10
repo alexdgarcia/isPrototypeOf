@@ -1,0 +1,92 @@
+<script src="simpleTest/simpleTest.js"></script>
+<script>
+function isPrototypeOf(ancestor, descendent) {
+  var prototype = Object.getPrototypeOf(descendent);
+
+  if (prototype === ancestor) {
+  	return true;
+  } else {
+  	if (prototype === null || ancestor === descendent) {
+  		return false;
+  	}
+
+  	return isPrototypeOf(ancestor, prototype);
+  }
+}
+
+tests({
+	'It should return true for prototypes that are one level deep.': function() {
+		//fail();
+		var dog = {
+			fetch: function() {
+				console.log('Fetching!');
+			}
+		};
+		var myDog = Object.create(dog);
+		var result = isPrototypeOf(dog, myDog);
+		eq(true, result);
+	},
+	'It should return true for prototypes that are two levels deep.': function() {
+		//fail();
+		var canine = {
+			bark: function() {
+				console.log('Woof Woof!');
+			}
+		};
+		var dog = Object.create(canine);
+		dog.fetch = function() {
+			console.log('Fetching!');
+		}
+		var myDog = Object.create(dog);
+		var result = isPrototypeOf(canine, myDog);
+		eq(true, result);
+	},
+	'It should return true, regardless of depth, as long as the relationship is in the prototype chain': function() {
+		//fail();
+		var canine = {
+			bark: function() {
+				console.log('Woof Woof!');
+			}
+		};
+		var dog = Object.create(canine);
+		dog.fetch = function() {
+			console.log('Fetching!');
+		}
+		var myDog = Object.create(dog);
+		var result = isPrototypeOf(Object.prototype, myDog);
+		eq(true, result);
+	},
+	'It should return false if the relationship does not exist in the prototype chain.': function() {
+		//fail();
+		var canine = {
+			bark: function() {
+				console.log('Woof Woof!');
+			}
+		};
+		var cat = {
+			meow: function() {
+				console.log('Mew Mew');
+			}
+		};
+		var dog = Object.create(canine);
+		dog.fetch = function() {
+			console.log('Fethcing!');
+		}
+		var myDog = Object.create(dog);
+		var result = isPrototypeOf(cat, myDog);
+		eq(false, result);
+	},
+	'If the same object is passed for both arguments, it should return false.': function() {
+		//fail();
+		var canine = {
+			bark: function() {
+				console.log('Woof woof!');
+			}
+		};
+		var myDog = Object.create(canine);
+		debugger;
+		var result = isPrototypeOf(myDog, myDog);
+		eq(false, result);
+	},
+});
+</script>
